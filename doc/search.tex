@@ -5,7 +5,7 @@
 \begin{document}
 
 \title{Search and Retrieval Algorithms}
-\author{Ryan Layer}
+\author{Audrey Weaver}
 \maketitle
 
 \section{Introduction}
@@ -19,42 +19,47 @@ Binary search sorts the database and then uses binary search to find each
 query in the database ($O(D \log D) + O(Q \log D)$). Merge search sorts both
 lists and then uses the merge operation to step through the lists in order to
 find matches ($O(D \log D) + O(Q \log Q) + O(Q + D)$). The hash table search
-places each database element in the database into a hash table and then looks
-for each query ($O(D) + O(Q)$, amortized). As expected, hash tables were the
-fastest and used the most memory, making them ideal for scenarios where
-database size is not a constraint. Notably, merge search outperformed binary
-search in handling large query sets, and should be used when the query set
-constitutes at least 50\% of the database size.
+for each query ($O(D) + O(Q)$, amortized). As expected, hash tables used the 
+most memory and were fastest, making them the most efficient when database 
+size is not a restriction. Notably, merge search outperformed binary search 
+in handling large query sets below approximately 60\% percent of the database size, and 
+should be used when the query set constitutes less than 60\% of the database 
+size.
 
 \section{Results}
 
 As expected, the hash table search was between 2X and 5X faster than the
-other methods but required over 4X more memory~(Figure \ref{fig:timeandmem}).
+other methods but required over 4X more memory~(Figure \ref{fig:experiment2}).
 Binary and merge search had identical memory footprints and similar runtime
-across the query set size range, with binary search slightly faster than
-merge search for small query sets and merge search slightly faster for larger
-query sets. Theoretically, we did not expect merge search to be faster than
-binary search~(Figure \ref{fig:timesim}).
-%%%% Add your experiment here %%%%
-Memory usage was flat for all methods, indicating that the constant database
-size was the most significant factor.
+across the query set percentage range, with binary search slightly faster than
+merge search for query percentages below 60 and merge search slightly faster 
+for larger query sets above 60\% of a database of 20,000 strings~(Figure \ref{fig:experiment1}).
+
+Interestingly, in experiment 1 which considered time and memory usage of 
+search algorithms with a consistent percentage query size of an increasing 
+database size, merge search was consistently faster than binary search with 
+hash table search significantly faster than both. Memory on the other hand,
+was more comprable between all three algorithms. According to this experiment
+when using a query size of 10\% of the database, the size of the database does 
+not make as inmpactful of a difference in memory. Depending on whether speed 
+or memory is more restrictive, either hash table or binary search will be more 
+efficient, respectively.
 
 \begin{figure}[ht] \centering
-    \includegraphics[width=0.6\textwidth]{q100-10000_d200000_str}
+    \includegraphics[width=0.6\textwidth]{./doc/db20000_qp90_r30.png}
     \caption{The empirical runtime and memory usage of search algorithm
-    considering a database with 200,000 strings and a varying number of
-    string queries.}
-    \label{fig:timeandmem}
+    considering a database with 20,000 strings and a varying percentage 
+    of string queries( Experiment 2).}
+    \label{fig:experiment2}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{q100-10000_d200000_sim}
-    \caption{The theoretic runtime and memory usage of binary search 
-    ($O(D \log D) + O(Q \log D)$) and merge search 
-    ($O(D \log D) + O(Q \log Q) + O(Q + D)$) algorithms considering a
-    database with 200,000 strings and a varying number of string queries.}
-    \label{fig:timesim}
+    \includegraphics[width=0.5\textwidth]{./doc/db100-20000-200qp10.png}
+    \caption{The empirical runtime and memory usage of search algorithm
+    considering a consistent query size of 10\% of an increasingly 
+    sized database (Experiment 1).}
+    \label{fig:experiment1}
 \end{figure}
 
 %%%% Add your figure here %%%%
@@ -64,40 +69,37 @@ size was the most significant factor.
 \subsection{Empirical comparison}
 
 We measured the time and memory usage of binary, merge, and
-hash table searches considering a database of 200,000 strings and query sets
-ranging from 100 to 200,000 strings. Strings for the database and query sets
-were drawn randomly from a word list without replacement. We created a new database and query set for each query set size and ran each search method, recording the run time and memory usage separately. We repeated this step five times and retained the meantime and memory metrics.
+hash table searches considering a database of 20,000 strings and query sets
+ranging from 10-90\% of the query size. Strings for the database and query sets
+were drawn randomly from a word list without replacement. We created a new database 
+and query set for each query set size and ran each search method, recording the run 
+time and memory usage separately. We repeated this step thirty times and retained 
+the mean time and memory metrics.
 
-\subsection{Theoretical comparison}
-
-To compare the theoretical performance of binary search and merge search,
-we used $\mathcal{T}(D,Q)=O(D \log D) + O(Q \log D)$ as the theoretical
-runtime function for for binary search and $\mathcal{T}(D,Q)=O(D \log D) +
-O(Q \log Q) + O(Q + D)$ as the theoretical runtime for merge search, where
-$D$ is the database size and $Q$ is the query set size. We then set $D=200,000$, let $Q$ vary from 100 to 200,000, and plotted the runtime.
-
-%%%% Add your method here %%%%
+We then measured the same attributes of the same algorithms using a set query 
+percentage of 10\% of the database size which increased by 2000 from 100 to 20,000 
+strings.
 
 \subsection{Reproducibility}
 
-To replicate these experiments, clone the repository and then run the
-empirical and simulation experiments as follows:
+To replicate these experiments, clone the repository and then run experiments 1 and 2 as follows:
 \begin{verbatim}
-$ clone https://github.com/ryanlayerlab/search.git
+$ clone https://github.com/audreyw04/search.git
 $ cd search
 $ python src/search.py \
-    --query_range 100 200000 10000 \
-    --database_size 200000  \
-    --rounds 5 \
-    --values_file data/words.txt.gz \
-    --out_file doc/q100-10000_d200000_str.png
-$ python sim.py \
-    --query_range 100 200000 10000 \
-    --database_size 200000  \
-    --width 5 \
-    --height 4 \
-    --out_file ../doc/q100-10000_d200000_sim.png 
+    --experiment_number 1 \
+    --query_percent 10 \
+    --database_range 100 20000 2000 \
+    --values_file ./data/words.txt.gz \
+    --rounds 30 \
+    --out_file ../doc/db100-20000-200qp10.png 
+$ python ./src/search.py \
+    --experiment_number 2 \
+    --query_percent 90 \
+    --values_file ./data/words.txt.gz \
+    --rounds 30 \
+    --out_file ../doc/db20000_qp90_r30.png
 \end{verbatim}
-%%%% Add your command here%%%%
+
 
 \end{document}
