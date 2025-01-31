@@ -17,7 +17,7 @@ def get_args():
     parser.add_argument('--query_percent',
                         type=float,
                         required=True,
-                        help='Query size as percent of database size (as decimal)'
+                        help='Query size as percent of database size (as whole number)'
                             + 'For Experiment 2: this is max percentage (10 incriments to 0)')
     parser.add_argument('--database_range',
                         type=int,

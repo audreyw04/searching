@@ -57,6 +57,6 @@ Merge search Memory min 238070.13333333333 max 382042.93333333335
 Hash table search Memory min 1044840.0 max 1188812.0
 ```
 
-<center><img src="/doc/q100-10000_d200000_sim.png" width="600"/></center>
+<center><img src="/doc/db20000_qp90_r30.png" width="600"/></center>
 
 
